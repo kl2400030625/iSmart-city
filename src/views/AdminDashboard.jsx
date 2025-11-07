@@ -1,8 +1,29 @@
 // src/views/AdminDashboard.jsx
 
 import React, { useState } from 'react';
+import {
+    Box,
+    Container,
+    Grid,
+    Typography,
+    Paper,
+    TextField,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Chip,
+    Card,
+    CardContent
+} from '@mui/material';
 import Header from '../components/Header';
-import Card from '../components/Card';
 
 const ADMIN_NAV_ITEMS = [
     { text: 'Dashboard', href: '#admin-dashboard', id: 'admin-dashboard' },
@@ -20,147 +41,380 @@ const AdminDashboard = ({ onLogout }) => {
         switch (activeSection) {
             case 'admin-dashboard':
                 return (
-                    <section id="admin-dashboard" className="content-section">
-                        <h2>Admin Control Center</h2>
-                        
-                        {/* FIX: Using grid-container-metrics for guaranteed 50/50 split on large screens */}
-                        <div className="grid-container-metrics"> 
-                            <Card title="Total Citizens Registered" data="12,548" />
-                            <Card title="Active Complaints" data="56 Pending" />
-                            
-                            <Card title="Average Response Time" data="4.2 hrs" /> 
-                            <Card title="City Zones Monitored" data="18 Active Zones" /> 
-                        </div>
+                    <Box component="section" id="admin-dashboard" sx={{ py: 3 }}>
+                        <Typography variant="h4" gutterBottom>
+                            Admin Control Center
+                        </Typography>
+                        <Box sx={{ mt: 3 }}>
+                            <Grid container spacing={3}>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Card sx={{ height: '100%' }}>
+                                    <CardContent>
+                                        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                                            Total Citizens Registered
+                                        </Typography>
+                                        <Typography variant="h4" color="primary.main">
+                                            12,548
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Card sx={{ height: '100%' }}>
+                                    <CardContent>
+                                        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                                            Active Complaints
+                                        </Typography>
+                                        <Typography variant="h4" color="warning.main">
+                                            56
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                            Pending
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Card sx={{ height: '100%' }}>
+                                    <CardContent>
+                                        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                                            Average Response Time
+                                        </Typography>
+                                        <Typography variant="h4" color="success.main">
+                                            4.2
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                            hours
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Card sx={{ height: '100%' }}>
+                                    <CardContent>
+                                        <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                                            City Zones Monitored
+                                        </Typography>
+                                        <Typography variant="h4" color="info.main">
+                                            18
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                            Active Zones
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            </Grid>
 
-                        {/* Full-width visualization block */}
-                        <div style={{marginTop: '3rem'}}>
-                            <h2>Real-Time Infrastructure Health</h2>
-                            <div className="chart-placeholder">
-                                Live Data Chart Placeholder (e.g., Complaint Trends, Energy Usage)
-                            </div>
-                        </div>
-                        
-                    </section>
+                            <Box sx={{ mt: 6 }}>
+                                <Typography variant="h5" gutterBottom>
+                                    Real-Time Infrastructure Health
+                                </Typography>
+                                <Paper 
+                                    sx={{ 
+                                        p: 3, 
+                                        height: 400, 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        justifyContent: 'center',
+                                        bgcolor: 'grey.100'
+                                    }}
+                                >
+                                    <Typography color="text.secondary">
+                                        Live Data Chart Placeholder (e.g., Complaint Trends, Energy Usage)
+                                    </Typography>
+                                </Paper>
+                            </Box>
+                        </Box>
+                    </Box>
                 );
 
             case 'city-management':
                 return (
-                    <section id="city-management" className="content-section">
-                        <h2>Manage City Details</h2>
-                        <div className="form-card">
-                            <form className="form-grid">
-                                <div className="input-group">
-                                    <label htmlFor="update-type">Update Type</label>
-                                    <select id="update-type">
-                                        <option>Infrastructure Status</option>
-                                        <option>Traffic Management</option>
-                                        <option>Water Supply</option>
-                                        <option>Waste Disposal</option>
-                                        <option>Energy Usage</option>
-                                    </select>
-                                </div>
-                                <div className="input-group">
-                                    <label htmlFor="zone-id">Target Zone ID</label>
-                                    <input type="text" id="zone-id" placeholder="e.g., North Zone" />
-                                </div>
-                                <div className="input-group">
-                                    <label htmlFor="update-description">Details / Changes</label>
-                                    <textarea id="update-description" rows="4" placeholder="Enter city management update..."></textarea>
-                                </div>
-                                <button className="btn primary-btn">Save Update</button>
-                            </form>
-                        </div>
-                    </section>
+                    <Box component="section" id="city-management" sx={{ py: 3 }}>
+                        <Typography variant="h4" gutterBottom>
+                            Manage City Details
+                        </Typography>
+                        <Paper sx={{ p: 3 }}>
+                            <Box component="form" sx={{ '& .MuiFormControl-root': { mb: 3 } }}>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12} md={6}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="update-type-label">Update Type</InputLabel>
+                                            <Select
+                                                labelId="update-type-label"
+                                                id="update-type"
+                                                label="Update Type"
+                                                defaultValue=""
+                                            >
+                                                <MenuItem value="infrastructure">Infrastructure Status</MenuItem>
+                                                <MenuItem value="traffic">Traffic Management</MenuItem>
+                                                <MenuItem value="water">Water Supply</MenuItem>
+                                                <MenuItem value="waste">Waste Disposal</MenuItem>
+                                                <MenuItem value="energy">Energy Usage</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            fullWidth
+                                            id="zone-id"
+                                            label="Target Zone ID"
+                                            placeholder="e.g., North Zone"
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            id="update-description"
+                                            label="Details / Changes"
+                                            multiline
+                                            rows={4}
+                                            placeholder="Enter city management update..."
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                        >
+                                            Save Update
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        </Paper>
+                    </Box>
                 );
             
             case 'complaints':
                 return (
-                    <section id="complaints" className="content-section">
-                        <h2>Citizen Complaints</h2>
-                        <div className="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Complaint ID</th>
-                                        <th>Citizen Name</th>
-                                        <th>Issue Type</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>#1012</td>
-                                        <td>Riya Sharma</td>
-                                        <td>Streetlight Outage</td>
-                                        <td><span className="status new">New</span></td>
-                                        <td><button className="btn">View</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#1009</td>
-                                        <td>Arjun Patel</td>
-                                        <td>Pothole</td>
-                                        <td><span className="status in-progress">In Progress</span></td>
-                                        <td><button className="btn">Update</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#1004</td>
-                                        <td>Ananya Rao</td>
-                                        <td>Waste Management</td>
-                                        <td><span className="status resolved">Resolved</span></td>
-                                        <td><button className="btn">Archive</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
+                    <Box component="section" id="complaints" sx={{ py: 3 }}>
+                        <Typography variant="h4" gutterBottom>
+                            Citizen Complaints
+                        </Typography>
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="complaints table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Complaint ID</TableCell>
+                                        <TableCell>Citizen Name</TableCell>
+                                        <TableCell>Issue Type</TableCell>
+                                        <TableCell>Status</TableCell>
+                                        <TableCell>Action</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell>#1012</TableCell>
+                                        <TableCell>Riya Sharma</TableCell>
+                                        <TableCell>Streetlight Outage</TableCell>
+                                        <TableCell>
+                                            <Chip 
+                                                label="New" 
+                                                color="primary" 
+                                                size="small" 
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button 
+                                                variant="outlined" 
+                                                size="small"
+                                            >
+                                                View
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>#1009</TableCell>
+                                        <TableCell>Arjun Patel</TableCell>
+                                        <TableCell>Pothole</TableCell>
+                                        <TableCell>
+                                            <Chip 
+                                                label="In Progress" 
+                                                color="warning" 
+                                                size="small" 
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button 
+                                                variant="outlined" 
+                                                size="small"
+                                                color="primary"
+                                            >
+                                                Update
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>#1004</TableCell>
+                                        <TableCell>Ananya Rao</TableCell>
+                                        <TableCell>Waste Management</TableCell>
+                                        <TableCell>
+                                            <Chip 
+                                                label="Resolved" 
+                                                color="success" 
+                                                size="small" 
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button 
+                                                variant="outlined" 
+                                                size="small"
+                                                color="secondary"
+                                            >
+                                                Archive
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Box>
                 );
 
             case 'feedback':
                 return (
-                    <section id="feedback" className="content-section">
-                        <h2>Citizen Feedback</h2>
-                        <div className="grid-container">
-                            <Card children={<><p>“Excellent waste management improvement in Sector 5.”</p><p className="text-secondary">– Priya Nair</p></>} highlightClass="" />
-                            <Card children={<><p>“Traffic signals need better synchronization during peak hours.”</p><p className="text-secondary">– Sameer Khan</p></>} highlightClass="" />
-                            <Card children={<><p>“Great mobile app integration for city updates!”</p><p className="text-secondary">– Kavita Joshi</p></>} highlightClass="" />
-                        </div>
-                    </section>
+                    <Box component="section" id="feedback" sx={{ py: 3 }}>
+                        <Typography variant="h4" gutterBottom>
+                            Citizen Feedback
+                        </Typography>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Card sx={{ height: '100%' }}>
+                                    <CardContent>
+                                        <Typography variant="body1" gutterBottom sx={{ 
+                                            fontStyle: 'italic',
+                                            mb: 2
+                                        }}>
+                                            "Excellent waste management improvement in Sector 5."
+                                        </Typography>
+                                        <Typography variant="subtitle2" color="text.secondary" sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 1
+                                        }}>
+                                            <Box component="span" sx={{ width: 20, borderTop: '2px solid', borderColor: 'primary.main' }} />
+                                            Priya Nair
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Card sx={{ height: '100%' }}>
+                                    <CardContent>
+                                        <Typography variant="body1" gutterBottom sx={{ 
+                                            fontStyle: 'italic',
+                                            mb: 2
+                                        }}>
+                                            "Traffic signals need better synchronization during peak hours."
+                                        </Typography>
+                                        <Typography variant="subtitle2" color="text.secondary" sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 1
+                                        }}>
+                                            <Box component="span" sx={{ width: 20, borderTop: '2px solid', borderColor: 'primary.main' }} />
+                                            Sameer Khan
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Card sx={{ height: '100%' }}>
+                                    <CardContent>
+                                        <Typography variant="body1" gutterBottom sx={{ 
+                                            fontStyle: 'italic',
+                                            mb: 2
+                                        }}>
+                                            "Great mobile app integration for city updates!"
+                                        </Typography>
+                                        <Typography variant="subtitle2" color="text.secondary" sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 1
+                                        }}>
+                                            <Box component="span" sx={{ width: 20, borderTop: '2px solid', borderColor: 'primary.main' }} />
+                                            Kavita Joshi
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        </Grid>
+                    </Box>
                 );
 
             case 'updates':
                 return (
-                    <section id="updates" className="content-section">
-                        <h2>Service Updates</h2>
-                        <div className="form-card">
-                            <form className="form-grid">
-                                <div className="input-group">
-                                    <label htmlFor="service-title">Service Title</label>
-                                    <input type="text" id="service-title" placeholder="e.g., Water Supply Interruption" />
-                                </div>
-                                <div className="input-group">
-                                    <label htmlFor="service-duration">Duration / Zone</label>
-                                    <input type="text" id="service-duration" placeholder="e.g., 8 AM - 12 PM, Sector 5" />
-                                </div>
-                                <div className="input-group">
-                                    <label htmlFor="service-details">Update Details</label>
-                                    <textarea id="service-details" rows="4" placeholder="Write service update details here..."></textarea>
-                                </div>
-                                <button className="btn primary-btn">Post Update</button>
-                            </form>
-                        </div>
+                    <Box component="section" id="updates" sx={{ py: 3 }}>
+                        <Typography variant="h4" gutterBottom>
+                            Service Updates
+                        </Typography>
+                        <Paper sx={{ p: 3, mb: 4 }}>
+                            <Box component="form" sx={{ display: 'grid', gap: 3 }}>
+                                <TextField
+                                    id="service-title"
+                                    label="Service Title"
+                                    placeholder="e.g., Water Supply Interruption"
+                                    fullWidth
+                                    variant="outlined"
+                                />
+                                <TextField
+                                    id="service-duration"
+                                    label="Duration / Zone"
+                                    placeholder="e.g., 8 AM - 12 PM, Sector 5"
+                                    fullWidth
+                                    variant="outlined"
+                                />
+                                <TextField
+                                    id="service-details"
+                                    label="Update Details"
+                                    placeholder="Write service update details here..."
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    variant="outlined"
+                                />
+                                <Button 
+                                    variant="contained" 
+                                    color="primary"
+                                    size="large"
+                                >
+                                    Post Update
+                                </Button>
+                            </Box>
+                        </Paper>
 
-                        <div className="grid-container" style={{ marginTop: '2rem' }}>
-                            <div className="service-card">
-                                <h4>Power Maintenance</h4>
-                                <p className="text-secondary">Scheduled maintenance in North Zone from 10 AM – 1 PM.</p>
-                            </div>
-                            <div className="service-card">
-                                <h4>Water Supply Notice</h4>
-                                <p className="text-secondary">Temporary disruption due to pipeline repairs in Sector 3.</p>
-                            </div>
-                        </div>
-                    </section>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sm={6}>
+                                <Card>
+                                    <CardContent>
+                                        <Typography variant="h6" gutterBottom>
+                                            Power Maintenance
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            Scheduled maintenance in North Zone from 10 AM – 1 PM.
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Card>
+                                    <CardContent>
+                                        <Typography variant="h6" gutterBottom>
+                                            Water Supply Notice
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            Temporary disruption due to pipeline repairs in Sector 3.
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        </Grid>
+                    </Box>
                 );
 
             default:
@@ -171,15 +425,15 @@ const AdminDashboard = ({ onLogout }) => {
     return (
         <>
             <Header 
-                logoText="SmartCity Admin" 
+                logoText="iSmartCity Admin" 
                 navItems={ADMIN_NAV_ITEMS}
                 activeView={activeSection}
                 onNavigate={setActiveSection}
                 onLogout={onLogout}
             />
-            <div className="container main-content">
+            <Container sx={{ py: 4 }}>
                 {renderSection()}
-            </div>
+            </Container>
         </>
     );
 };
