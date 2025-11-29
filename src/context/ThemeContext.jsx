@@ -31,7 +31,7 @@ const getDesignTokens = (mode) => ({
                 },
                 text: {
                     primary: '#0f172a', // Darker text for better contrast
-                    secondary: '#475569',
+                    secondary: '#0f172a',
                 },
                 success: {
                     main: '#16a34a',
