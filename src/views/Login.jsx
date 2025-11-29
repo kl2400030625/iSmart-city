@@ -1,24 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    Container,
     Paper,
     Typography,
     TextField,
     Button,
-    FormControl,
-    InputLabel,
-    Select,
     MenuItem,
     Box,
-    Link
+    Link,
+    Alert
 } from '@mui/material';
 
+// Demo credentials - In production, use proper backend authentication
+// User (Citizen): username: 'user', password: 'user123'
+// Admin (Administrator): username: 'admin', password: 'admin123'
+const CREDENTIALS = {
+    user: { username: 'user', password: 'user123' },
+    admin: { username: 'admin', password: 'admin123' }
+};
+
 const Login = ({ onLogin, onNavigate }) => {
+    const [error, setError] = useState('');
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
+        const username = formData.get('username');
+        const password = formData.get('password');
         const role = formData.get('role-selector');
-        if (onLogin) onLogin(role);
+
+        // Validate credentials based on selected role
+        const expectedCredentials = CREDENTIALS[role];
+        if (expectedCredentials && 
+            username === expectedCredentials.username && 
+            password === expectedCredentials.password) {
+            setError('');
+            if (onLogin) onLogin(role);
+        } else {
+            setError('Invalid username or password for the selected role');
+        }
     };
 
     return (
@@ -92,6 +111,12 @@ const Login = ({ onLogin, onNavigate }) => {
                         <MenuItem value="user">Citizen</MenuItem>
                         <MenuItem value="admin">Administrator</MenuItem>
                     </TextField>
+
+                    {error && (
+                        <Alert severity="error" sx={{ mt: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
 
                     <Button
                         type="submit"
