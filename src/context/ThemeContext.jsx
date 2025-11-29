@@ -26,7 +26,7 @@ const getDesignTokens = (mode) => ({
                     contrastText: '#ffffff',
                 },
                 background: {
-                    default: '#ffffff', // Subtle blue tint
+                    default: '#ffffff', 
                     paper: '#ffffff',
                 },
                 text: {
