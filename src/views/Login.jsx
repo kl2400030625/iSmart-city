@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Container,
     Paper,
@@ -10,15 +10,63 @@ import {
     Select,
     MenuItem,
     Box,
-    Link
+    Link,
+    Alert,
+    CircularProgress
 } from '@mui/material';
+import { validateLoginForm } from '../utils/validation';
+import { useAuth } from '../context/AuthContext';
 
 const Login = ({ onLogin, onNavigate }) => {
-    const handleSubmit = (e) => {
+    const { login, loading, error: authError, clearError } = useAuth();
+    const [formData, setFormData] = useState({
+        username: '',
+        password: '',
+        role: 'user'
+    });
+    const [errors, setErrors] = useState({});
+    const [submitError, setSubmitError] = useState('');
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+        // Clear field error when user types
+        if (errors[name]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
+        if (submitError) setSubmitError('');
+        if (authError) clearError();
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const role = formData.get('role-selector');
-        if (onLogin) onLogin(role);
+        setSubmitError('');
+        
+        // Validate form
+        const validation = validateLoginForm(formData);
+        if (!validation.isValid) {
+            setErrors(validation.errors);
+            return;
+        }
+        
+        setErrors({});
+        
+        // Attempt login
+        const result = await login(formData.username, formData.password);
+        
+        if (result.success) {
+            // Use the role from the authenticated user, or fallback to form selection
+            const userRole = result.user?.role === 'admin' ? 'admin' : 'user';
+            if (onLogin) onLogin(userRole);
+        } else {
+            setSubmitError(result.error || 'Login failed. Please try again.');
+        }
     };
 
     return (
@@ -47,6 +95,12 @@ const Login = ({ onLogin, onNavigate }) => {
                     iSmart City Management Portal
                 </Typography>
 
+                {(submitError || authError) && (
+                    <Alert severity="error" sx={{ mb: 2, textAlign: 'left' }}>
+                        {submitError || authError}
+                    </Alert>
+                )}
+
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ width: '100%' }}>
                     <TextField
                         fullWidth
@@ -57,6 +111,10 @@ const Login = ({ onLogin, onNavigate }) => {
                         margin="dense"
                         autoComplete="username"
                         autoFocus
+                        value={formData.username}
+                        onChange={handleChange}
+                        error={!!errors.username}
+                        helperText={errors.username}
                         InputLabelProps={{ style: { color: "#94a3b8" } }}
                         InputProps={{
                             style: { color: "#fff", backgroundColor: "#334155", borderRadius: 6 },
@@ -71,6 +129,10 @@ const Login = ({ onLogin, onNavigate }) => {
                         variant="outlined"
                         margin="dense"
                         autoComplete="current-password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        error={!!errors.password}
+                        helperText={errors.password}
                         InputLabelProps={{ style: { color: "#94a3b8" } }}
                         InputProps={{
                             style: { color: "#fff", backgroundColor: "#334155", borderRadius: 6 },
@@ -80,8 +142,9 @@ const Login = ({ onLogin, onNavigate }) => {
                         select
                         fullWidth
                         label="Select Role"
-                        name="role-selector"
-                        defaultValue="user"
+                        name="role"
+                        value={formData.role}
+                        onChange={handleChange}
                         variant="outlined"
                         margin="dense"
                         InputLabelProps={{ style: { color: "#94a3b8" } }}
@@ -97,6 +160,7 @@ const Login = ({ onLogin, onNavigate }) => {
                         type="submit"
                         variant="contained"
                         fullWidth
+                        disabled={loading}
                         sx={{
                             mt: 2,
                             py: 1.2,
@@ -107,7 +171,7 @@ const Login = ({ onLogin, onNavigate }) => {
                             fontWeight: "bold",
                         }}
                     >
-                        Login
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
                     </Button>
 
                     <Box sx={{ mt: 2, textAlign: 'center' }}>
