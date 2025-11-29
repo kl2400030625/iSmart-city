@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Box, CssBaseline } from '@mui/material';
-import { ThemeProvider } from './context/ThemeContext';
 import Login from './views/Login';
 import Signup from './views/Signup';
 import AdminDashboard from './views/AdminDashboard';
@@ -65,16 +64,14 @@ function App() {
     }, []);
 
     return (
-        <ThemeProvider>
-            <Box sx={{ 
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '100vh'
-            }}>
-                <CssBaseline />
-                {renderView()}
-            </Box>
-        </ThemeProvider>
+        <Box sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh'
+        }}>
+            <CssBaseline />
+            {renderView()}
+        </Box>
     );
 }
 

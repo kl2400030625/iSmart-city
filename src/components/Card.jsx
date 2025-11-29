@@ -6,7 +6,7 @@ import {
     Box
 } from '@mui/material';
 
-const Card = ({ title, data, highlightClass = 'data-highlight', children }) => {
+const Card = ({ title, data, children }) => {
     return (
         <MuiCard sx={{ height: '100%' }}>
             <CardContent>
