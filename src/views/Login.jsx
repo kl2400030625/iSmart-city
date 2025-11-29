@@ -10,7 +10,9 @@ import {
     Alert
 } from '@mui/material';
 
-// Predefined credentials for user and admin roles
+// Demo credentials - In production, use proper backend authentication
+// User (Citizen): username: 'user', password: 'user123'
+// Admin (Administrator): username: 'admin', password: 'admin123'
 const CREDENTIALS = {
     user: { username: 'user', password: 'user123' },
     admin: { username: 'admin', password: 'admin123' }
