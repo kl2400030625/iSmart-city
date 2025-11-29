@@ -3,12 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { Box, CssBaseline } from '@mui/material';
 import { ThemeProvider } from './context/ThemeContext';
+import { useAuth } from './context/AuthContext';
 import Login from './views/Login';
 import Signup from './views/Signup';
 import AdminDashboard from './views/AdminDashboard';
 import CitizenDashboard from './views/CitizenDashboard';
 
 function App() {
+    const { user, logout: authLogout, isAuthenticated } = useAuth();
+    
     // derive initial view from the current pathname so pages like /signup work directly
     const getViewFromPath = (path) => {
         if (!path) return 'guest';
@@ -19,7 +22,28 @@ function App() {
         return 'guest';
     };
 
-    const [view, setView] = useState(() => getViewFromPath(window.location.pathname));
+    const [view, setView] = useState(() => {
+        // Check if user is already authenticated
+        if (isAuthenticated()) {
+            const storedUser = user;
+            if (storedUser?.role === 'admin') return 'admin';
+            return 'user';
+        }
+        return getViewFromPath(window.location.pathname);
+    });
+
+    // Update view when user changes
+    useEffect(() => {
+        if (user) {
+            const newView = user.role === 'admin' ? 'admin' : 'user';
+            setView(currentView => {
+                if (currentView !== newView && currentView !== 'signup') {
+                    return newView;
+                }
+                return currentView;
+            });
+        }
+    }, [user]);
 
     // navigation helper: update view state and push history entry
     const handleNavigate = (nextView) => {
@@ -38,6 +62,7 @@ function App() {
     };
 
     const handleLogout = () => {
+        authLogout();
         handleNavigate('guest');
     };
 

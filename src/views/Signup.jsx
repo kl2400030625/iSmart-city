@@ -7,9 +7,14 @@ import {
   MenuItem,
   Paper,
   Link,
+  Alert,
+  CircularProgress
 } from "@mui/material";
+import { validateSignupForm } from '../utils/validation';
+import { useAuth } from '../context/AuthContext';
 
 const Signup = ({ onSignup, onNavigate }) => {
+  const { signup, loading, error: authError, clearError } = useAuth();
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
@@ -18,19 +23,54 @@ const Signup = ({ onSignup, onNavigate }) => {
     confirmPassword: "",
     role: "",
   });
+  const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState('');
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear field error when user types
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+    if (submitError) setSubmitError('');
+    if (authError) clearError();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    // Send to backend in a real app
-    if (onSignup) onSignup(formData.role || 'user');
+    setSubmitError('');
+    
+    // Validate form
+    const validation = validateSignupForm(formData);
+    if (!validation.isValid) {
+      setErrors(validation.errors);
+      return;
+    }
+    
+    setErrors({});
+    
+    // Attempt signup
+    const result = await signup({
+      fullname: formData.fullname,
+      email: formData.email,
+      username: formData.username,
+      password: formData.password,
+      role: formData.role === 'admin' ? 'admin' : 'user'
+    });
+    
+    if (result.success) {
+      const userRole = result.user?.role === 'admin' ? 'admin' : 'user';
+      if (onSignup) onSignup(userRole);
+    } else {
+      setSubmitError(result.error || 'Registration failed. Please try again.');
+    }
   };
 
   return (
@@ -59,6 +99,12 @@ const Signup = ({ onSignup, onNavigate }) => {
           iSmart City Management Portal
         </Typography>
 
+        {(submitError || authError) && (
+          <Alert severity="error" sx={{ mb: 2, textAlign: 'left' }}>
+            {submitError || authError}
+          </Alert>
+        )}
+
         <form onSubmit={handleSubmit}>
           <TextField
             label="Full Name"
@@ -68,6 +114,8 @@ const Signup = ({ onSignup, onNavigate }) => {
             margin="dense"
             value={formData.fullname}
             onChange={handleChange}
+            error={!!errors.fullname}
+            helperText={errors.fullname}
             InputLabelProps={{ style: { color: "#94a3b8" } }}
             InputProps={{
               style: { color: "#fff", backgroundColor: "#334155", borderRadius: 6 },
@@ -82,6 +130,8 @@ const Signup = ({ onSignup, onNavigate }) => {
             margin="dense"
             value={formData.email}
             onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
             InputLabelProps={{ style: { color: "#94a3b8" } }}
             InputProps={{
               style: { color: "#fff", backgroundColor: "#334155", borderRadius: 6 },
@@ -95,6 +145,8 @@ const Signup = ({ onSignup, onNavigate }) => {
             margin="dense"
             value={formData.username}
             onChange={handleChange}
+            error={!!errors.username}
+            helperText={errors.username}
             InputLabelProps={{ style: { color: "#94a3b8" } }}
             InputProps={{
               style: { color: "#fff", backgroundColor: "#334155", borderRadius: 6 },
@@ -109,6 +161,8 @@ const Signup = ({ onSignup, onNavigate }) => {
             margin="dense"
             value={formData.password}
             onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
             InputLabelProps={{ style: { color: "#94a3b8" } }}
             InputProps={{
               style: { color: "#fff", backgroundColor: "#334155", borderRadius: 6 },
@@ -123,6 +177,8 @@ const Signup = ({ onSignup, onNavigate }) => {
             margin="dense"
             value={formData.confirmPassword}
             onChange={handleChange}
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword}
             InputLabelProps={{ style: { color: "#94a3b8" } }}
             InputProps={{
               style: { color: "#fff", backgroundColor: "#334155", borderRadius: 6 },
@@ -137,6 +193,8 @@ const Signup = ({ onSignup, onNavigate }) => {
             margin="dense"
             value={formData.role}
             onChange={handleChange}
+            error={!!errors.role}
+            helperText={errors.role}
             InputLabelProps={{ style: { color: "#94a3b8" } }}
             InputProps={{
               style: { color: "#fff", backgroundColor: "#334155", borderRadius: 6 },
@@ -151,6 +209,7 @@ const Signup = ({ onSignup, onNavigate }) => {
             type="submit"
             variant="contained"
             fullWidth
+            disabled={loading}
             sx={{
               mt: 2,
               py: 1.2,
@@ -161,7 +220,7 @@ const Signup = ({ onSignup, onNavigate }) => {
               fontWeight: "bold",
             }}
           >
-            Sign Up
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign Up'}
           </Button>
         </form>
 
